@@ -2,18 +2,13 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+  "Auth/internal/adapter/HTTP"
+
 )
 
 
 func main(){
   r:= gin.Default() 
-
-  r.GET("/ping",func(ctx *gin.Context) {
-	  ctx.JSON(200,gin.H{
-		"mensaje":"servidor vivo",
-	  })
-
-  })
-
+  http.RegisterRoutes(r)
   r.Run(":8000")
 }
