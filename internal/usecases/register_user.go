@@ -12,11 +12,13 @@ var EmailAlreadyExist = errors.New("email already exist")
 
 type RegisterUserInput struct{
 	repo ports.UserRepository
+	hasher ports.PassWordHaser
 }
 
 
-func NewRegisterUser(repo ports.UserRepository) *RegisterUserInput{
-	return &RegisterUserInput{repo: repo,}
+func NewRegisterUser(repo ports.UserRepository, hasher ports.PassWordHaser) *RegisterUserInput{
+	return &RegisterUserInput{repo: repo,hasher: hasher}
+	
 }
 
 
@@ -28,9 +30,15 @@ func (uc RegisterUserInput) Execute(email string, password string ) error{
 		return EmailAlreadyExist
 	 }
 
+	// hash password
 
+	passwordHash,err := uc.hasher.Hash(password)
+	if err != nil{
+		return err
+	}
+   
     // create new User
-	newUser,err:= user.New(email,password)
+	newUser,err:= user.New(email,passwordHash)
     if err != nil{
 		return err
 	}
