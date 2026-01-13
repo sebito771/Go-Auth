@@ -20,7 +20,7 @@ func NewRegisterUser(repo ports.UserRepository) *RegisterUserInput{
 }
 
 
-func (uc RegisterUserInput) excute(email string ) error{
+func (uc RegisterUserInput) Execute(email string ) error{
      
 	// verify if the email already exist
 	 existingEmail,_ := uc.repo.FindByEmail(email)
