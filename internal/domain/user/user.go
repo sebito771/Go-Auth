@@ -18,11 +18,15 @@ type User struct {
 }
 
 
-func New(email string) (*User, error) {
+func New(email string, password string) (*User, error) {
 	email = strings.TrimSpace(strings.ToLower(email))
 
 	if email == "" {
 		return nil, errors.New("email is required")
+	}
+
+	if password == ""{
+		return nil , errors.New("password is required")
 	}
 
 	return &User{
