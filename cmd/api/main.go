@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-  "Auth/internal/adapter/http"
+  "Auth/internal/adapters/http"
 
 )
 

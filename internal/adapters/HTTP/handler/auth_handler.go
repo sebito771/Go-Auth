@@ -1,7 +1,7 @@
 package http
 
 import (
-	"Auth/internal/adapter/http/dto"
+	"Auth/internal/adapters/http/dto"
 	"Auth/internal/usecases"
 	"net/http"
 
