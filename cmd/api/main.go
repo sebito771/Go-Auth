@@ -2,7 +2,7 @@ package main
 
 import (
 	
-	transport "Auth/internal/adapters/transport"
+	 "Auth/internal/adapters/transport"
 	"github.com/gin-gonic/gin"
 )
 
