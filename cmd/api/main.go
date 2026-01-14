@@ -1,14 +1,14 @@
 package main
 
 import (
+	
+	transport "Auth/internal/adapters/transport"
 	"github.com/gin-gonic/gin"
-  "Auth/internal/adapters/http"
-
 )
 
 
 func main(){
   r:= gin.Default() 
-  http.RegisterRoutes(r)
+  transport.RegisterRoutes(r)
   r.Run(":8000")
 }
