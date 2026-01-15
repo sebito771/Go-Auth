@@ -29,6 +29,7 @@ func (au *AuthHandler) Register(c *gin.Context){
 
 	if err := au.userRegister.Execute(RegisterReq.Email,RegisterReq.Password); err != nil{
 		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
+		return
 	}
 
 	
