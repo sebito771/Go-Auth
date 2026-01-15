@@ -5,6 +5,7 @@ import (
 	"errors"
 	"Auth/internal/ports"
 	"Auth/internal/domain/user"
+	"Auth/internal/adapters/repository"
 )
 
 var EmailAlreadyExist = errors.New("email already exist")
@@ -25,7 +26,10 @@ func NewRegisterUser(repo ports.UserRepository, hasher ports.PassWordHaser) *Reg
 func (uc RegisterUserInput) Execute(email string, password string ) error{
      
 	// verify if the email already exist
-	 existingEmail,_ := uc.repo.FindByEmail(email)
+	 existingEmail,err := uc.repo.FindByEmail(email)
+	 if err!= nil&& errors.Is(err,repository.ErrorNotFound){
+		return err
+	 }
 	 if existingEmail != nil{
 		return EmailAlreadyExist
 	 }
