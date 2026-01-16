@@ -27,7 +27,7 @@ func (uc RegisterUserInput) Execute(email string, password string ) error{
      
 	// verify if the email already exist
 	 existingEmail,err := uc.repo.FindByEmail(email)
-	 if err!= nil&& errors.Is(err,repository.ErrorNotFound){
+	 if err!= nil&& !errors.Is(err,repository.ErrorNotFound){
 		return err
 	 }
 	 if existingEmail != nil{
