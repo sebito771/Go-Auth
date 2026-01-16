@@ -2,19 +2,24 @@ package transport
 
 import (
 	"Auth/internal/adapters/transport/dto"
-	"Auth/internal/usecases"
 	"net/http"
+	
 
 	"github.com/gin-gonic/gin"
 )
 
+// create interface User register
+
+type UserRegisterer interface{
+	Execute(email string, password string)error
+}
 
 type AuthHandler struct{
-  userRegister *usecases.RegisterUserInput
+  userRegister UserRegisterer
 }
 
 
-func NewAuthHandler (user *usecases.RegisterUserInput)*AuthHandler{
+func NewAuthHandler (user UserRegisterer)*AuthHandler{
    return &AuthHandler{userRegister: user,}
 }
 
