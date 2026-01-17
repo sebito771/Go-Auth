@@ -11,19 +11,19 @@ import (
 var EmailAlreadyExist = errors.New("email already exist")
 
 
-type RegisterUserInput struct{
+type RegisterUser struct{
 	repo ports.UserRepository
 	hasher ports.PassWordHaser
 }
 
 
-func NewRegisterUser(repo ports.UserRepository, hasher ports.PassWordHaser) *RegisterUserInput{
-	return &RegisterUserInput{repo: repo,hasher: hasher}
+func NewRegisterUser(repo ports.UserRepository, hasher ports.PassWordHaser) *RegisterUser{
+	return &RegisterUser{repo: repo,hasher: hasher}
 	
 }
 
 
-func (uc RegisterUserInput) Execute(email string, password string ) error{
+func (uc RegisterUser) Execute(email string, password string ) error{
      
 	// verify if the email already exist
 	 existingEmail,err := uc.repo.FindByEmail(email)
