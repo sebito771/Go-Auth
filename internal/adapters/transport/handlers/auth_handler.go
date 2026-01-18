@@ -2,8 +2,9 @@ package transport
 
 import (
 	"Auth/internal/adapters/transport/dto"
+	"Auth/internal/domain/user"
 	"net/http"
-	
+
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,10 @@ import (
 
 type UserRegisterer interface{
 	Execute(email string, password string)error
+}
+
+type UserLogger interface{
+	Auth(email string, password string)(*user.User,error)
 }
 
 type AuthHandler struct{
