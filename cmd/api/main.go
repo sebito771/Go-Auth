@@ -16,8 +16,9 @@ func main(){
   hasher:= security.BcryptStruct{}
   //use cases
   register:= usecases.NewRegisterUser(repo,&hasher)
+  login:= usecases.NewLoginUser(repo,&hasher)
   //handler
-  handl:= handlers.NewAuthHandler(register)
+  handl:= handlers.NewAuthHandler(register,login)
    
   //gin init
   r:= gin.Default()
