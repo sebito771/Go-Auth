@@ -15,6 +15,7 @@ const (
 type User struct {
 	email string
 	role  Role
+	password string
 }
 
 
@@ -32,6 +33,7 @@ func New(email string, password string) (*User, error) {
 	return &User{
 		email: email,
 		role:  RoleUser,
+		password: password,
 	}, nil
 }
 
@@ -46,4 +48,9 @@ func (u *User) Email() string {
 
 func (u *User) Role() Role {
 	return u.role
+}
+
+
+func (u *User) Password() string{
+	return  u.password
 }
