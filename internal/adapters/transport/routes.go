@@ -14,6 +14,7 @@ func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler) {
 	auth:= r.Group("/auth")
 	{
        auth.POST("/register",h.Register)
+	   auth.POST("/login",h.Login)
 	}
 	// health check route
  
