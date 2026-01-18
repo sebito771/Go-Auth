@@ -47,6 +47,28 @@ func (au *AuthHandler) Register(c *gin.Context){
 	c.JSON(http.StatusCreated,gin.H{"message":"user registered"})
 }
 
+
+func (au *AuthHandler) Login(c *gin.Context){
+	var loginReq dto.LoginRequest
+
+	if err:= c.ShouldBindJSON(&loginReq); err!= nil{
+		c.JSON(http.StatusBadRequest,gin.H{"error":"invalid request"})
+		return
+	}
+
+	u,err := au.userLogin.Auth(loginReq.Email,loginReq.Password); if err != nil{
+		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusAccepted,gin.H{
+		"user": u,
+		"message":"welcome",
+	})
+
+   
+}
+
 	
  
 
