@@ -21,11 +21,12 @@ type UserLogger interface{
 
 type AuthHandler struct{
   userRegister UserRegisterer
+  userLogin UserLogger
 }
 
 
-func NewAuthHandler (user UserRegisterer)*AuthHandler{
-   return &AuthHandler{userRegister: user,}
+func NewAuthHandler (user UserRegisterer, userLog UserLogger)*AuthHandler{
+   return &AuthHandler{userRegister: user,userLogin:userLog }
 }
 
 
