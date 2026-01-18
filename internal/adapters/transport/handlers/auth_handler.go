@@ -62,8 +62,12 @@ func (au *AuthHandler) Login(c *gin.Context){
 	}
 
 	c.JSON(http.StatusAccepted,gin.H{
-		"user": u,
 		"message":"welcome",
+		"user": gin.H{
+			"email":u.Email(),
+			"role":u.Role(),
+		},
+		
 	})
 
    
