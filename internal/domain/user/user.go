@@ -13,6 +13,7 @@ const (
 )
 
 type User struct {
+	id int64
 	email string
 	role  Role
 	password string
@@ -53,4 +54,12 @@ func (u *User) Role() Role {
 
 func (u *User) Password() string{
 	return  u.password
+}
+
+func (u *User) GetId() int64{
+	return u.id
+}
+
+func (u *User) SetId(id int64){
+  u.id=id
 }
