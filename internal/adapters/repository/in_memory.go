@@ -25,6 +25,9 @@ func (in *InMemoryStruct) Save(user *user.User)error{
 
 
    in.users[user.Email()]= user
+   if user.GetId()==0{
+      user.SetId(int64(len(in.users)+1))
+   }
    return nil
 }
 
