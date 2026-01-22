@@ -2,7 +2,7 @@ package transport
 
 import (
 	"Auth/internal/adapters/transport/dto"
-	"Auth/internal/domain/user"
+	
 	"net/http"
 
 
@@ -16,7 +16,7 @@ type UserRegisterer interface{
 }
 
 type UserLogger interface{
-	Auth(email string, password string)(*user.User,error)
+	Auth(email string, password string)(string,error)
 }
 
 type AuthHandler struct{
@@ -61,14 +61,12 @@ func (au *AuthHandler) Login(c *gin.Context){
 		return
 	}
 
-	c.JSON(http.StatusAccepted,gin.H{
-		"message":"welcome",
-		"user": gin.H{
-			"email":u.Email(),
-			"role":u.Role(),
-		},
-		
-	})
+	
+c.JSON(200, gin.H{
+        "status":  "success",
+        "message": "Login exitoso",
+        "token":   u, // El string que viene del Use Case
+    })
 
    
 }
