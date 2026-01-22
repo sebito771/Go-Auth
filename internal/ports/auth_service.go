@@ -16,5 +16,5 @@ type TokenClaims struct{
 
 
 type TokenValidator interface{
-	ValidateToken(tokenstr string)(TokenClaims,error)
+	ValidateToken(tokenstr string)(*TokenClaims,error)
 }
