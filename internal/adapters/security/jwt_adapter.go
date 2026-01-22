@@ -2,7 +2,9 @@ package security
 
 import (
 	"Auth/internal/domain/user"
-	
+	"Auth/internal/ports"
+	"errors"
+
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -30,3 +32,30 @@ func (j *JwtAdapter) GetToken(user *user.User)(string,error){
 
 	return token.SignedString([]byte(j.secretKey))
 } 
+
+func (j *JwtAdapter) ValidateToken(tokenstr string)(*ports.TokenClaims,error){
+  
+	token,err:= jwt.Parse(tokenstr,func(t *jwt.Token) (any, error) {
+		if _,ok:= t.Method.(*jwt.SigningMethodHMAC); !ok{
+			return nil , errors.New("unexpected siganture method")
+		}
+		return []byte(j.secretKey), nil
+	},
+	
+) 
+if err!= nil || !token.Valid{
+  return nil,errors.New("invalid or expired token")
+}
+
+claims,ok:= token.Claims.(jwt.MapClaims)
+if !ok {
+	return nil,errors.New("error getting claims")
+}
+
+
+return &ports.TokenClaims{
+	UserdID: int64(claims["sub"].(float64)), 
+    Email: claims["email"].(string),
+	Role: claims["role"].(string),} , nil
+}
+
