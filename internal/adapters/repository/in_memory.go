@@ -4,6 +4,7 @@ import (
 	"Auth/internal/domain/user"
 	"Auth/internal/ports"
 	"errors"
+	"strconv"
 	"sync"
 )
 
@@ -40,4 +41,14 @@ func (in *InMemoryStruct) FindByEmail(email string)(*user.User,error){
 	return nil, ErrorNotFound
    }
    return user ,nil
+}
+
+func (in *InMemoryStruct) FindById(id int64)(*user.User,error){
+   in.mu.RLock()
+   defer in.mu.RUnlock()
+   user,ok:= in.users[strconv.FormatInt(id, 10)]
+   if !ok{
+      return nil,ErrorNotFound
+   }
+   return user,nil
 }
