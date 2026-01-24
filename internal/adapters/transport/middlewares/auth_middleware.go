@@ -29,6 +29,7 @@ func (am *AuthMiddleWare) Aunthenticate()gin.HandlerFunc {
 
 	if !strings.HasPrefix(authHeader,"Bearer "){
 		ctx.JSON(http.StatusUnauthorized,gin.H{"error":"invalid token"})
+		ctx.Abort()
 		return 
 	}
 
