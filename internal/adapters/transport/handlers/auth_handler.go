@@ -2,9 +2,9 @@ package transport
 
 import (
 	"Auth/internal/adapters/transport/dto"
-	
-	"net/http"
+	"Auth/internal/domain/user"
 
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,14 +19,19 @@ type UserLogger interface{
 	Auth(email string, password string)(string,error)
 }
 
+type FindProfile interface{
+	FindMe(id int64)(*user.User,error)
+}
+
 type AuthHandler struct{
   userRegister UserRegisterer
   userLogin UserLogger
+  userProfile FindProfile
 }
 
 
-func NewAuthHandler (user UserRegisterer, userLog UserLogger)*AuthHandler{
-   return &AuthHandler{userRegister: user,userLogin:userLog }
+func NewAuthHandler (user UserRegisterer, userLog UserLogger,UserMe FindProfile)*AuthHandler{
+   return &AuthHandler{userRegister: user,userLogin:userLog ,}
 }
 
 
@@ -64,11 +69,35 @@ func (au *AuthHandler) Login(c *gin.Context){
 	
 c.JSON(200, gin.H{
         "status":  "success",
-        "message": "Login exitoso",
-        "token":   u, // El string que viene del Use Case
+        "message": "successful login",
+        "token":   u, 
     })
+}
 
-   
+func (au *AuthHandler)GetMe(c *gin.Context){
+	idRaw,exist:= c.Get("id")
+	if !exist{
+		c.JSON(http.StatusForbidden,gin.H{"error":"id not found"})
+		return
+	}
+
+	userId:= idRaw.(int64)
+
+	u,err:=au.userProfile.FindMe(userId)
+    if err!=nil{
+		c.JSON(http.StatusNotFound,gin.H{"error":"user not found"})
+		return
+	}
+
+	response:= dto.UserResponse{
+		Email: u.Email(),
+		Role: u.Role(),
+		Message: "WELCOME",
+	}
+
+	c.JSON(http.StatusOK,response)
+	
+
 }
 
 	
