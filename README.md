@@ -47,6 +47,15 @@ GET    /me
 
 ```
 
+## Completed Endpoints
+```
+http
+POST   /auth/register
+POST   /auth/login
+GET    /me -> /logged/me
+
+```
+
 ## Environment Variables
 
 The project uses a .env file to manage sensitive information such as:
