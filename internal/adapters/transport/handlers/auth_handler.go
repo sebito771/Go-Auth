@@ -31,7 +31,7 @@ type AuthHandler struct{
 
 
 func NewAuthHandler (user UserRegisterer, userLog UserLogger,UserMe FindProfile)*AuthHandler{
-   return &AuthHandler{userRegister: user,userLogin:userLog ,}
+   return &AuthHandler{userRegister: user,userLogin:userLog ,userProfile: UserMe}
 }
 
 
