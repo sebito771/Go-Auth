@@ -1,13 +1,14 @@
 package transport
 
 import (
-	"github.com/gin-gonic/gin"
 	handlers "Auth/internal/adapters/transport/handlers"
-	
+	"Auth/internal/adapters/transport/middlewares"
+
+	"github.com/gin-gonic/gin"
 )
 
 
-func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler) {
+func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler,m middlewares.AuthMiddleWare) {
 
 	// create auth group
     
@@ -15,6 +16,13 @@ func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler) {
 	{
        auth.POST("/register",h.Register)
 	   auth.POST("/login",h.Login)
+	}
+
+	user:= r.Group("/logged")
+	{
+		user.Use(m.Aunthenticate())
+
+		user.GET("/me",h.GetMe)
 	}
 	// health check route
  
