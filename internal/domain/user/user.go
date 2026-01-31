@@ -38,6 +38,13 @@ func New(email string, password string) (*User, error) {
 	}, nil
 }
 
+func Restore(id int64,email, role , password string)(*User,error){
+	return &User{id: id,email:
+		 email,
+		 role: Role(role),
+		 password: password,},nil
+}
+
 
 func (u *User) PromoteToAdmin() {
 	u.role = RoleAdmin
