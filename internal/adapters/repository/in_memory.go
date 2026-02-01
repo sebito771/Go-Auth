@@ -3,7 +3,6 @@ package repository
 import (
 	"Auth/internal/domain/user"
 	"Auth/internal/ports"
-	"errors"
 	"strconv"
 	"sync"
 )
@@ -14,7 +13,7 @@ type InMemoryStruct struct{
 	mu sync.RWMutex
 }
 
-var ErrorNotFound= errors.New("user not found")
+
 
 func NewMemoryStruct()ports.UserRepository{
 	return &InMemoryStruct{users: make(map[string]*user.User),usersByid: make(map[string]*user.User)}
