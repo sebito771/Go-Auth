@@ -10,13 +10,13 @@ type MariaModel struct {
 	Email string    `gorm:"uniqueIndex:not null;size(255)"`
 	Password string `gorm:"not null"`
 	Role  string    `gorm:"default:'user';size(50)"`
-	Create_at time.Time
-	Update_at time.Time
+	Created_at time.Time `gorm:"column:created_at;autoCreateTime"`
+	Update_at time.Time `gorm:"column:updated_at;autoUpdateTime"`
 }
 
 
 func(m *MariaModel) TableName() string {
-	return "Users"
+	return "users"
 }
 
 func ToDomain(ma *MariaModel) *user.User{
@@ -32,6 +32,7 @@ func  FromDomain(u *user.User)*MariaModel{
 		Id: uint(u.GetId()),
 		Email: u.Email(),
 		Role: string(u.Role()),
+		Password: u.Password(),
 
 	}
 }
