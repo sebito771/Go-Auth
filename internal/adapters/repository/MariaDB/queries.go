@@ -1,7 +1,9 @@
 package mariadb
 
 import (
+	"Auth/internal/adapters/repository"
 	"Auth/internal/domain/user"
+
 	"gorm.io/gorm"
 )
 
@@ -31,6 +33,9 @@ func (ma *MariaQueries) Save(user *user.User)error{
 func (ma *MariaQueries) FindByEmail(email string)(*user.User,error){
 	var model MariaModel
 	result:=ma.db.Where("email=?",email).First(&model)
+	if result.Error!=nil&& result.Error== gorm.ErrRecordNotFound{
+		return nil , repository.ErrorNotFound
+	}
 	if result.Error!=nil{
 		return nil , result.Error
 	}
