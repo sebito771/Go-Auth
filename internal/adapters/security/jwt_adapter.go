@@ -37,7 +37,7 @@ func (j *JwtAdapter) ValidateToken(tokenstr string)(*ports.TokenClaims,error){
   
 	token,err:= jwt.Parse(tokenstr,func(t *jwt.Token) (any, error) {
 		if _,ok:= t.Method.(*jwt.SigningMethodHMAC); !ok{
-			return nil , errors.New("unexpected siganture method")
+			return nil , errors.New("unexpected signature method")
 		}
 		return []byte(j.secretKey), nil
 	},
