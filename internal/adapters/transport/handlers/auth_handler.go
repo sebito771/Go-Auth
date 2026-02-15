@@ -11,26 +11,26 @@ import (
 
 // create interface User register
 
-type UserRegisterer interface{
+type UseCaseRegister interface{
 	Execute(email string, password string)error
 }
 
-type UserLogger interface{
+type UseCaseLogin interface{
 	Auth(email string, password string)(string,error)
 }
 
-type FindProfile interface{
+type ProfileUseCase interface{
 	FindMe(id int64)(*user.User,error)
 }
 
 type AuthHandler struct{
-  userRegister UserRegisterer
-  userLogin UserLogger
-  userProfile FindProfile
+  userRegister UseCaseRegister
+  userLogin UseCaseLogin
+  userProfile ProfileUseCase
 }
 
 
-func NewAuthHandler (user UserRegisterer, userLog UserLogger,UserMe FindProfile)*AuthHandler{
+func NewAuthHandler (user UseCaseRegister, userLog UseCaseLogin,UserMe ProfileUseCase)*AuthHandler{
    return &AuthHandler{userRegister: user,userLogin:userLog ,userProfile: UserMe}
 }
 
