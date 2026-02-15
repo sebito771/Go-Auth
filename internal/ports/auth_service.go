@@ -12,6 +12,7 @@ type TokenClaims struct{
 	UserdID int64
 	Email string
 	Role string
+	Exp int64
 }
 
 
