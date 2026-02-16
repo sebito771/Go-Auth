@@ -28,12 +28,15 @@ func (bl *BlackList) IsBlackListed(token string) (bool, error) {
 	bl.MU.RLock()
 	expiresAt, exist := bl.store[token]
 	if !exist {
+		 bl.MU.RUnlock()
 		return false, nil
+	 
 	}
 	bl.MU.RUnlock()
 
+
 	 bl.MU.Lock()
-	defer bl.MU.Unlock()
+	 defer bl.MU.Unlock()
 	if time.Now().After(expiresAt) {
 		delete(bl.store, token)
 		return false, nil
@@ -42,17 +45,18 @@ func (bl *BlackList) IsBlackListed(token string) (bool, error) {
 }
 
 func(bl *BlackList) cleanUp(){
-	bl.MU.Lock()
-	defer bl.MU.Unlock()
 	ticker:= time.NewTicker(time.Minute)
 
   for range ticker.C{
+	bl.MU.Lock()
     now:= time.Now()
 	for token, expiresAt:= range bl.store{
 		if now.After(expiresAt){
 			delete(bl.store,token)
-		}
+			
+		}	
 	}
+	bl.MU.Unlock()
   }
 
 }
