@@ -16,6 +16,7 @@ func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler,m middlewares.AuthMid
 	{
        auth.POST("/register",h.Register)
 	   auth.POST("/login",h.Login)
+	   auth.POST("/logout",h.Logout)
 	}
 
 	user:= r.Group("/logged")

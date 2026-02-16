@@ -56,6 +56,7 @@ if !ok {
 return &ports.TokenClaims{
 	UserdID: int64(claims["sub"].(float64)), 
     Email: claims["email"].(string),
-	Role: claims["role"].(string),} , nil
+	Role: claims["role"].(string),
+	Exp: int64(claims["exp"].(float64))}, nil
 }
 
