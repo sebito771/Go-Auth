@@ -3,6 +3,7 @@ package transport
 import (
 	"Auth/internal/adapters/transport/dto"
 	"Auth/internal/domain/user"
+	"strings"
 
 	"net/http"
 
@@ -23,15 +24,20 @@ type ProfileUseCase interface{
 	FindMe(id int64)(*user.User,error)
 }
 
+type LogoutUseCase interface{
+	Logout(token string)error
+}
+
 type AuthHandler struct{
   userRegister UseCaseRegister
   userLogin UseCaseLogin
   userProfile ProfileUseCase
+  userLogout LogoutUseCase
 }
 
 
-func NewAuthHandler (user UseCaseRegister, userLog UseCaseLogin,UserMe ProfileUseCase)*AuthHandler{
-   return &AuthHandler{userRegister: user,userLogin:userLog ,userProfile: UserMe}
+func NewAuthHandler (user UseCaseRegister, userLog UseCaseLogin,UserMe ProfileUseCase,userLogout LogoutUseCase)*AuthHandler{
+   return &AuthHandler{userRegister: user,userLogin:userLog ,userProfile: UserMe,userLogout:userLogout}
 }
 
 
@@ -100,6 +106,25 @@ func (au *AuthHandler)GetMe(c *gin.Context){
 
 }
 
+func (au *AuthHandler) Logout(c *gin.Context){
+  authHeader:= c.GetHeader("Authorization")
+
+  if authHeader==""{
+	c.JSON(http.StatusUnauthorized,gin.H{"error":"token required"})
+	return 
+  }
+  if !strings.HasPrefix(authHeader,"Bearer "){
+	c.JSON(http.StatusUnauthorized,gin.H{"error":"invalid token"})
+	return 
+  } 
+
+  TokenStr:= strings.TrimPrefix(authHeader,"Bearer ")
+  if err:= au.userLogout.Logout(TokenStr); err != nil{
+	c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
+	return 
+  }
+    c.JSON(http.StatusAccepted,gin.H{"message":"successful logout"})
+}
 	
  
 
