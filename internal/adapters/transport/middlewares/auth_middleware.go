@@ -10,10 +10,11 @@ import (
 
 type AuthMiddleWare struct{
 	validator ports.TokenValidator
+	blackList ports.TokenBlackList
 }
 
-func NewAuhtMiddleWare(vdt ports.TokenValidator)*AuthMiddleWare{
-	return &AuthMiddleWare{validator: vdt}
+func NewAuthMiddleWare(vdt ports.TokenValidator,bl ports.TokenBlackList)*AuthMiddleWare{
+	return &AuthMiddleWare{validator: vdt,blackList:bl}
 }
 
 
@@ -28,7 +29,7 @@ func (am *AuthMiddleWare) Aunthenticate()gin.HandlerFunc {
 	}
 
 	if !strings.HasPrefix(authHeader,"Bearer "){
-		ctx.JSON(http.StatusUnauthorized,gin.H{"error":"invalid token"})
+		ctx.JSON(http.StatusUnauthorized,gin.H{"error":"invalid token format"})
 		ctx.Abort()
 		return 
 	}
@@ -41,6 +42,21 @@ func (am *AuthMiddleWare) Aunthenticate()gin.HandlerFunc {
 	 ctx.Abort()
 	 return 
 	}
+
+    exist,err := am.blackList.IsBlackListed(TokenStr)
+	
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError,gin.H{"error":"error checking token blacklist"})
+		ctx.Abort()
+		return
+	}
+	
+	if exist{
+		ctx.JSON(http.StatusUnauthorized,gin.H{"error":"token blacklisted"})
+		ctx.Abort()
+		return
+	}
+
 	
 	ctx.Set("id",tk.UserdID)
 	ctx.Set("role",tk.Role)
