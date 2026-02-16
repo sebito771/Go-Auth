@@ -31,8 +31,8 @@ func main(){
   if err != nil{
   log.Fatalf("Error connecting to MariaDB: %v", err) 
   }
-  
-  //repo:= repository.NewMemoryStruct()
+
+  blacklist:= security.NewBlackList()
   hasher:= security.BcryptStruct{}
   tokenGen:= security.NewJwtAdapter(tokenKey)
   
@@ -40,10 +40,11 @@ func main(){
   register:= usecases.NewRegisterUser(repoMaria,&hasher)
   login:= usecases.NewLoginUser(repoMaria,&hasher,tokenGen)
   profile:= usecases.NewProfilUser(repoMaria)
+  logout:= usecases.NewLogoutUser(blacklist,tokenGen)
   //handler
-  handl:= handlers.NewAuthHandler(register,login,profile)
+  handl:= handlers.NewAuthHandler(register,login,profile,logout)
   //middlewares
-  middl:= middlewares.NewAuhtMiddleWare(tokenGen)
+  middl:= middlewares.NewAuthMiddleWare(tokenGen,blacklist)
    
   //gin init
   r:= gin.Default()
