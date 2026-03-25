@@ -53,7 +53,8 @@ http
 POST   /auth/register
 POST   /auth/login
 GET    /me -> /logged/me
-
+POST   /auth/logout
+POST   /auth/refresh
 ```
 
 ## Environment Variables
