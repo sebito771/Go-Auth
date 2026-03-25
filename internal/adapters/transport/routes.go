@@ -7,29 +7,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler,m middlewares.AuthMiddleWare) {
+func RegisterRoutes(r *gin.Engine, h *handlers.AuthHandler, m middlewares.AuthMiddleWare) {
 
 	// create auth group
-    
-	auth:= r.Group("/auth")
+
+	auth := r.Group("/auth")
 	{
-       auth.POST("/register",h.Register)
-	   auth.POST("/login",h.Login)
-	   auth.POST("/logout",h.Logout)
+		auth.POST("/register", h.Register)
+		auth.POST("/login", h.Login)
+		auth.POST("/logout", h.Logout)
+		auth.POST("/refresh", h.Refresh)
 	}
 
-	user:= r.Group("/logged")
+	user := r.Group("/logged")
 	{
 		user.Use(m.Aunthenticate())
 
-		user.GET("/me",h.GetMe)
+		user.GET("/me", h.GetMe)
 	}
 	// health check route
- 
-	r.GET("/health",func(ctx *gin.Context){
-		ctx.JSON(200,gin.H{
-			"message":"server running",
+
+	r.GET("/health", func(ctx *gin.Context) {
+		ctx.JSON(200, gin.H{
+			"message": "server running",
 		})
 	})
 }
