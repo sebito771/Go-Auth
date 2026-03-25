@@ -14,43 +14,45 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main(){
-    err:= godotenv.Load(); if err != nil{
-	 log.Fatalf("Error loading .env file: %v", err) 
-	 }
+func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 
-    tokenKey:= os.Getenv("TOKEN_PASSWORD")
-    host:= os.Getenv("DB_HOST")
-    port:= os.Getenv("DB_PORT")
-    user:= os.Getenv("DB_USER")
-    password:= os.Getenv("DB_PASSWORD")
-    dbname:= os.Getenv("DB_NAME")
+	tokenKey := os.Getenv("TOKEN_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
 
-  //adapters
-  repoMaria, err:= mariadb.NewMariaDBRepo(user,password,host+":"+port,dbname)
-  if err != nil{
-  log.Fatalf("Error connecting to MariaDB: %v", err) 
-  }
+	//adapters
+	repoMaria, err := mariadb.NewMariaDBRepo(user, password, host+":"+port, dbname)
+	if err != nil {
+		log.Fatalf("Error connecting to MariaDB: %v", err)
+	}
 
-  blacklist:= security.NewBlackList()
-  hasher:= security.BcryptStruct{}
-  tokenGen:= security.NewJwtAdapter(tokenKey)
-  
-  //use cases
-  register:= usecases.NewRegisterUser(repoMaria,&hasher)
-  login:= usecases.NewLoginUser(repoMaria,&hasher,tokenGen)
-  profile:= usecases.NewProfilUser(repoMaria)
-  logout:= usecases.NewLogoutUser(blacklist,tokenGen)
-  //handler
-  handl:= handlers.NewAuthHandler(register,login,profile,logout)
-  //middlewares
-  middl:= middlewares.NewAuthMiddleWare(tokenGen,blacklist)
-   
-  //gin init
-  r:= gin.Default()
+	blacklist := security.NewBlackList()
+	hasher := security.BcryptStruct{}
+	tokenGen := security.NewJwtAdapter(tokenKey)
 
-  //router
-  transport.RegisterRoutes(r, handl,*middl)
-  
-  r.Run(":8000")
+	//use cases
+	register := usecases.NewRegisterUser(repoMaria, &hasher)
+	login := usecases.NewLoginUser(repoMaria, &hasher, tokenGen)
+	profile := usecases.NewProfilUser(repoMaria)
+	logout := usecases.NewLogoutUser(blacklist, tokenGen)
+	refresh := usecases.NewRefreshTokenUseCase(repoMaria, tokenGen, tokenGen, blacklist)
+	//handler
+	handl := handlers.NewAuthHandler(register, login, profile, logout, refresh)
+	//middlewares
+	middl := middlewares.NewAuthMiddleWare(tokenGen, blacklist)
+
+	//gin init
+	r := gin.Default()
+
+	//router
+	transport.RegisterRoutes(r, handl, *middl)
+
+	r.Run(":8000")
 }
