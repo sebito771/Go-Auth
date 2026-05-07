@@ -14,28 +14,39 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type Config struct {
+	TokenKey  string
+	DBHost    string
+	DBPort    string
+	DBUser    string
+	DBPassword string
+	DBName    string
+}
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	tokenKey := os.Getenv("TOKEN_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
+	config := Config{
+		TokenKey:  os.Getenv("TOKEN_PASSWORD"),
+		DBHost:    os.Getenv("DB_HOST"),
+		DBPort:    os.Getenv("DB_PORT"),
+		DBUser:    os.Getenv("DB_USER"),
+		DBPassword: os.Getenv("DB_PASSWORD"),
+		DBName:    os.Getenv("DB_NAME"),
+	}
 
 	//adapters
-	repoMaria, err := mariadb.NewMariaDBRepo(user, password, host+":"+port, dbname)
+	repoMaria, err := mariadb.NewMariaDBRepo(config.DBUser, config.DBPassword, config.DBHost+":"+config.DBPort, config.DBName)
 	if err != nil {
 		log.Fatalf("Error connecting to MariaDB: %v", err)
 	}
 
 	blacklist := security.NewBlackList()
 	hasher := security.BcryptStruct{}
-	tokenGen := security.NewJwtAdapter(tokenKey)
+	tokenGen := security.NewJwtAdapter(config.TokenKey)
 
 	//use cases
 	register := usecases.NewRegisterUser(repoMaria, &hasher)
